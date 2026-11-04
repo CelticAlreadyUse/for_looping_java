@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catatan visual · Matematika dalam kode</title>
+<style>
+:root{--paper:#f5f8fc;--ink:#182e4b;--muted:#526782;--blue:#245ac6;--line:#d4dfed;--green:#17715b;--red:#ae3535}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 system-ui,sans-serif}main{max-width:1160px;margin:auto;padding:40px 24px}header{border-bottom:2px solid var(--ink);padding-bottom:24px}.eyebrow{font:13px monospace;letter-spacing:.12em;color:var(--blue)}h1,h2{font-family:Georgia,serif;line-height:1.18}h1{font-size:clamp(30px,5vw,52px);margin:12px 0}h2{font-size:30px;margin:0 0 16px}h3{font-size:17px;margin:24px 0 8px}p{margin:10px 0}.intro{max-width:760px;color:var(--muted)}nav{display:flex;gap:8px;flex-wrap:wrap;margin:24px 0 32px}button{font:inherit;background:white;color:var(--ink);border:1px solid var(--line);padding:10px 18px;border-radius:6px;cursor:pointer}nav button[aria-selected="true"]{background:var(--ink);color:white;border-color:var(--ink)}button:hover{border-color:var(--blue)}button:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:3px}.layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,1fr);gap:32px}.controls{display:flex;flex-wrap:wrap;gap:14px;margin:20px 0}label{font-size:14px;display:flex;flex-direction:column;gap:4px}input{font:inherit;border:1px solid #9bafc9;background:white;padding:9px 12px;border-radius:4px;width:110px;color:var(--ink)}input.wide{width:min(100%,360px)}.formula{font:20px/1.7 Georgia,serif;border-left:3px solid var(--blue);padding:12px 18px;background:#e9f0fc;overflow-wrap:anywhere}.result{font-size:18px;font-weight:600;margin:16px 0;overflow-wrap:anywhere}.note{color:var(--muted);font-size:14px}.error{color:var(--red)}.plot{background:white;border-bottom:1px solid var(--line);overflow:hidden}.plot svg{display:block;width:100%;height:auto}svg text{font:12px system-ui,sans-serif;fill:var(--ink)}.table-wrap{overflow:auto;max-height:360px;border-top:1px solid var(--line)}table{border-collapse:collapse;width:100%;font:14px/1.6 ui-monospace,monospace;white-space:nowrap}th,td{text-align:right;padding:9px 12px;border-bottom:1px solid var(--line)}th{background:#eaf0f8;position:sticky;top:0}th:first-child,td:first-child{text-align:left}code{background:#e8edf5;padding:2px 5px;border-radius:3px;font-size:.9em}aside{border-left:1px solid var(--line);padding-left:24px}footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}.chips{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}.chip{background:#e9f0fc;padding:6px 12px;border-radius:4px;font-family:monospace}a{color:var(--blue)}[hidden]{display:none!important}@media(max-width:780px){main{padding:24px 16px}.layout{grid-template-columns:1fr;gap:24px}aside{border-left:0;border-top:1px solid var(--line);padding:20px 0 0}nav button{padding:8px 12px}.controls{gap:10px}}
+</style>
+</head>
+<body><main>
+<header><div class="eyebrow">CATATAN VISUAL / LATIHAN JAVA</div><h1>Lihat rumusnya bekerja.</h1><p class="intro">Ubah angka, amati gambar, lalu cocokkan dengan langkah dalam kode. Empat latihan ini menghubungkan operasi matematika dengan input, perulangan, dan percabangan.</p></header>
+<nav role="tablist" aria-label="Materi matematika">
+<button id="tab-kuadrat" role="tab" aria-controls="kuadrat" aria-selected="true">Persamaan kuadrat</button>
+<button id="tab-fibonacci" role="tab" aria-controls="fibonacci" aria-selected="false" tabindex="-1">Fibonacci</button>
+<button id="tab-data" role="tab" aria-controls="data" aria-selected="false" tabindex="-1">Kuadrat, akar & kebalikan</button>
+<button id="tab-resistor" role="tab" aria-controls="resistor" aria-selected="false" tabindex="-1">Resistor</button>
+</nav>
+<section id="kuadrat" role="tabpanel" aria-labelledby="tab-kuadrat">
+<h2>Dua akar, satu parabola.</h2><div class="layout"><div>
+<div class="controls"><label>Koefisien a<input id="a" type="number" value="2" min="-100" max="100" step="0.25"></label><label>Koefisien b<input id="b" type="number" value="-6" min="-100" max="100" step="0.25"></label><label>Konstanta c<input id="c" type="number" value="4" min="-100" max="100" step="0.25"></label></div>
+<div class="plot" id="q-plot"></div><div id="q-result" class="result" aria-live="polite"></div>
+<h3>Tabel seperti perulangan Java</h3><p class="note">Mulai dari akar terkecil, tambah x sebesar 0,25. Akar terbesar ikut masuk jika tercapai oleh langkah tersebut. Maksimal 400 baris ditampilkan.</p><div id="q-table" class="table-wrap"></div>
+</div><aside><div class="formula">y = ax² + bx + c<br>D = b² − 4ac<br>x₁,₂ = (−b ± √D) / (2a)</div><h3>Cara membaca grafik</h3><p>Akar adalah nilai x saat <strong>y = 0</strong>: titik perpotongan kurva dengan sumbu x. Titik lingkaran menandai akar real.</p><p><strong>a &gt; 0:</strong> parabola terbuka ke atas.<br><strong>a &lt; 0:</strong> parabola terbuka ke bawah.</p><h3>Keputusan dalam kode</h3><p><code>a == 0</code> → bukan persamaan kuadrat.<br><code>D &gt; 0</code> → dua akar real berbeda.<br><code>D == 0</code> → akar real kembar.<br><code>D &lt; 0</code> → tidak ada akar real.</p><p class="note">Sesuai latihan, tabel y hanya dihitung saat D &gt; 0. Grafik tetap ditampilkan untuk membantu melihat kasus lainnya.</p><p class="note">Kode: <a href="src/PersamaanDuaAkar.java">PersamaanDuaAkar.java</a></p></aside></div></section>
+<section id="fibonacci" role="tabpanel" aria-labelledby="tab-fibonacci" hidden>
+<h2>Setiap suku punya dua pendahulu.</h2><div class="layout"><div><div class="controls"><label>Banyak suku (1–20)<input id="fib-n" type="number" min="1" max="20" step="1" value="8"></label></div><div id="fib-plot" class="plot"></div><div id="fib-result" class="chips" aria-live="polite"></div><h3>Jejak perubahan variabel</h3><div id="fib-table" class="table-wrap"></div></div><aside><div class="formula">F₁ = 1, F₂ = 1<br>Fₙ = Fₙ₋₁ + Fₙ₋₂</div><h3>Mengikuti cara kode kamu</h3><p>Mulai dengan <code>firstFibonacci = 1</code> dan <code>secondFibonacci = 0</code>.</p><ol><li>Jumlahkan kedua nilai untuk mendapat suku baru.</li><li>Simpan suku baru ke <code>secondFibonacci</code>.</li><li>Kurangi suku baru dengan nilai <code>firstFibonacci</code> lama. Hasilnya adalah nilai <code>secondFibonacci</code> lama.</li><li>Cetak suku baru, kemudian ulangi.</li></ol><p class="note">Kolom “awal” dibaca sebelum pembaruan, sedangkan “akhir” dibaca setelah pembaruan. Tinggi batang menunjukkan besar nilai suku, bukan nomor sukunya.</p><p class="note">Visual dibatasi sampai 20 suku agar terbaca. Pada kode Java dengan tipe int, hasil mulai melampaui kapasitas pada suku ke-47.</p><p class="note">Kode: <a href="src/fibonacci.java">fibonacci.java</a></p></aside></div></section>
+<section id="data" role="tabpanel" aria-labelledby="tab-data" hidden>
+<h2>Satu data, tiga operasi.</h2><div class="layout"><div><div class="controls"><label>Data (pisahkan dengan spasi atau koma)<input class="wide" id="data-values" value="0, 1, 4, 9" autocomplete="off"></label></div><p class="note">Gunakan titik untuk desimal, misalnya 2.5. Maksimal 20 data; setiap nilai antara −100 dan 100.</p><div id="data-plot" class="plot"></div><div id="data-result" aria-live="polite"></div><div id="data-table" class="table-wrap"></div></div><aside><div class="formula">Jumlah kuadrat = Σx²<br>Jumlah akar = Σ√x<br>Jumlah kebalikan = Σ(1/x), x ≠ 0</div><h3>Perhatikan pengecualiannya</h3><p><strong>Kuadrat:</strong> hasil x × x selalu tidak negatif untuk bilangan real.</p><p><strong>Akar:</strong> √x hanya real untuk x ≥ 0. Jika satu saja data negatif, jumlah akar seluruh data tidak terdefinisi dalam bilangan real.</p><p><strong>Kebalikan:</strong> data nol dilewati karena 1/0 tidak terdefinisi. Data negatif tetap ikut dijumlahkan.</p><p class="note">Tiga batang menampilkan hasil total pada skala yang sama. Tabel memisahkan kontribusi masing-masing data. Simbol Σ berarti “jumlahkan”.</p><p class="note">Kode: <a href="src/JumlahAkarKuadrat.java">JumlahAkarKuadrat.java</a></p></aside></div></section>
+<section id="resistor" role="tabpanel" aria-labelledby="tab-resistor" hidden>
+<h2>Komponen sama, susunan berbeda.</h2><div class="layout"><div><div class="controls"><label>Tahanan resistor dalam Ω<input class="wide" id="r-values" value="10, 20" autocomplete="off"></label></div><p class="note">Pisahkan dengan spasi atau koma; gunakan titik untuk desimal. Masukkan 1–6 resistor dengan nilai lebih dari 0 sampai 1.000.000 Ω.</p><div id="r-plot" class="plot"></div><div id="r-result" aria-live="polite"></div></div><aside><div class="formula">Seri: R = R₁ + R₂ + … + Rₙ<br>Paralel: 1/R = 1/R₁ + … + 1/Rₙ</div><h3>Mengapa hasilnya berbeda?</h3><p><strong>Seri:</strong> arus melewati setiap resistor secara berurutan. Total tahanan adalah penjumlahan semua resistor.</p><p><strong>Paralel:</strong> arus mempunyai beberapa jalur. Untuk lebih dari satu resistor positif, tahanan total lebih kecil daripada resistor terkecil.</p><p>Untuk 10 Ω dan 20 Ω:<br>Seri = 10 + 20 = <strong>30 Ω</strong>.<br>Paralel = 1 / (1/10 + 1/20) ≈ <strong>6,667 Ω</strong>.</p><p class="note">Visual ini memakai tahanan positif. Kode Java mengikuti pseudocode dan belum memvalidasi setiap nilai tahanan.</p><p class="note">Kode: <a href="src/Resistor.java">Resistor.java</a></p></aside></div></section>
+<footer>Buka file ini langsung di browser. Semua perhitungan berjalan di perangkatmu, tanpa internet. Angka ditampilkan dengan pembulatan; hasil Java bisa memiliki lebih banyak digit.</footer>
+</main>
+<script>
+'use strict';
+// Pembantu tampilan; data pengguna hanya diproses sebagai angka, bukan markup.
+const $ = id => document.getElementById(id);
+const fmt = n => Number.isFinite(n) ? Number(n.toFixed(6)).toLocaleString('id-ID', {maximumFractionDigits:6}) : 'Tidak terdefinisi';
+const blue = '#245ac6', green = '#17715b', red = '#ae3535';
+function svg(content, title) { return `<svg viewBox="0 0 640 340" role="img" aria-label="${title}">${content}</svg>`; }
+function table(headers, rows) { return `<table><thead><tr>${headers.map(h=>`<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr>${row.map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}</tbody></table>`; }
+function error(ids, message) { ids.forEach(id=>$(id).replaceChildren()); const p=document.createElement('p');p.className='error';p.textContent=message;$(ids[0]).append(p); }
+const tabs = [...document.querySelectorAll('[role="tab"]')];
+function activate(tab) { tabs.forEach(t=>{const on=t===tab;t.setAttribute('aria-selected',String(on));t.tabIndex=on?0:-1;$(t.getAttribute('aria-controls')).hidden=!on;}); }
+tabs.forEach((tab,i)=>{tab.addEventListener('click',()=>activate(tab));tab.addEventListener('keydown',e=>{let j;if(e.key==='ArrowRight')j=(i+1)%tabs.length;else if(e.key==='ArrowLeft')j=(i+tabs.length-1)%tabs.length;else if(e.key==='Home')j=0;else if(e.key==='End')j=tabs.length-1;else return;e.preventDefault();activate(tabs[j]);tabs[j].focus();});});
+function quadratic() {
+ const vals=['a','b','c'].map(id=>$(id).value.trim()); const [a,b,c]=vals.map(Number);
+ if(vals.some(v=>v==='')||[a,b,c].some(v=>!Number.isFinite(v)||Math.abs(v)>100))return error(['q-result','q-plot','q-table'],'Isi a, b, dan c dengan angka antara −100 dan 100.');
+ const D=b*b-4*a*c; let roots=[];
+ if(a!==0&&D>=0) roots=[(-b-Math.sqrt(D))/(2*a),(-b+Math.sqrt(D))/(2*a)].sort((x,y)=>x-y);
+ const center=a!==0?-b/(2*a):0; const span=roots.length?Math.max(2,(roots[1]-roots[0])*.8):4;
+ const lo=center-span,hi=center+span,ys=Array.from({length:201},(_,i)=>{const x=lo+(hi-lo)*i/200;return a*x*x+b*x+c;});
+ let ymin=Math.min(0,...ys),ymax=Math.max(0,...ys);const pad=Math.max(1,(ymax-ymin)*.12);ymin-=pad;ymax+=pad;
+ const X=x=>58+(x-lo)/(hi-lo)*554,Y=y=>290-(y-ymin)/(ymax-ymin)*264;
+ let s='';for(let i=0;i<=4;i++){const x=lo+(hi-lo)*i/4,y=ymin+(ymax-ymin)*i/4;s+=`<path d="M${X(x)} 26V290M58 ${Y(y)}H612" stroke="#e1e8f1"/><text x="${X(x)}" y="310" text-anchor="middle">${fmt(x)}</text><text x="50" y="${Y(y)+4}" text-anchor="end">${fmt(y)}</text>`;}
+ s+=`<path d="M58 ${Y(0)}H612" stroke="#526782"/>`;if(lo<=0&&hi>=0)s+=`<path d="M${X(0)} 26V290" stroke="#526782"/>`;
+ s+=`<text x="615" y="329">x</text><text x="15" y="16">y</text><path d="${ys.map((y,i)=>`${i?'L':'M'}${X(lo+(hi-lo)*i/200)} ${Y(y)}`).join(' ')}" fill="none" stroke="${blue}" stroke-width="3"/>`;
+ [...new Set(roots)].forEach(x=>{s+=`<circle cx="${X(x)}" cy="${Y(0)}" r="5" fill="${green}"><title>Akar: x = ${fmt(x)}, y = 0</title></circle>`;});
+ $('q-plot').innerHTML=svg(s,'Grafik y = ax kuadrat + bx + c; lingkaran menunjukkan akar real');
+ $('q-result').textContent=a===0?'Bukan persamaan kuadrat. Grafik menunjukkan fungsi linear atau konstan.':`D = ${fmt(D)} → ${D>0?`dua akar: ${fmt(roots[0])} dan ${fmt(roots[1])}`:D===0?`akar kembar: ${fmt(roots[0])}`:'tidak ada akar real'}.`;
+ const rows=[];if(a!==0&&D>0){for(let x=roots[0],i=0;x<=roots[1]&&i<400;x+=.25,i++)rows.push([fmt(x),fmt(a*x*x+b*x+c)]);}
+ $('q-table').innerHTML=rows.length?table(['x','y = ax² + bx + c'],rows):'<p class="note">Tabel tidak dihitung untuk kasus ini, sesuai pseudocode.</p>';
+}
+// Grafik batang memakai satu skala linear dan garis nol untuk nilai negatif.
+function bars(values, labels, title) {
+ const finite=values.filter(Number.isFinite),low=Math.min(0,...finite),high=Math.max(1,...finite),range=high-low,Y=v=>280-(v-low)/range*240,base=Y(0),w=540/values.length;
+ let s=`<path d="M65 ${base}H615" stroke="#526782"/><text x="55" y="${base+4}" text-anchor="end">0</text><text x="15" y="18">Nilai</text><text x="55" y="38" text-anchor="end">${fmt(high)}</text>`;
+ values.forEach((v,i)=>{const x=70+i*w;if(Number.isFinite(v)){s+=`<rect x="${x+4}" y="${Math.min(base,Y(v))}" width="${Math.max(3,w-12)}" height="${Math.max(1,Math.abs(base-Y(v)))}" fill="${blue}"><title>${labels[i]}: ${fmt(v)}</title></rect>`;if(values.length<=6)s+=`<text x="${x+w/2}" y="${v>=0?Y(v)-7:Y(v)+16}" text-anchor="middle">${fmt(v)}</text>`;}else{s+=`<text x="${x+w/2}" y="150" text-anchor="middle">Tidak real</text>`;}s+=`<text x="${x+w/2}" y="320" text-anchor="middle">${labels[i]}</text>`;});return svg(s,title);
+}
+function fibonacci() {
+ const raw=$('fib-n').value,n=Number(raw);if(!raw||!Number.isInteger(n)||n<1||n>20)return error(['fib-result','fib-plot','fib-table'],'Masukkan bilangan bulat dari 1 sampai 20.');
+ let first=1,second=0;const values=[],rows=[];
+ for(let i=0;i<n;i++){const oldFirst=first,oldSecond=second,next=first+second;second=next;first=second-first;values.push(next);rows.push([i+1,oldFirst,oldSecond,`${oldFirst} + ${oldSecond} = ${next}`,first,second]);}
+ $('fib-plot').innerHTML=bars(values,values.map((_,i)=>String(i+1)),'Nilai Fibonacci menurut nomor suku; sumbu mendatar adalah nomor suku');
+ $('fib-result').innerHTML=values.map(v=>`<span class="chip">${v}</span>`).join('');
+ $('fib-table').innerHTML=table(['Suku','first awal','second awal','Suku baru','first akhir','second akhir'],rows);
+}
+function parseList(id,max,min,maxValue) {const raw=$(id).value.trim();if(!raw)return null;const tokens=raw.split(/[\s,]+/);const values=tokens.map(Number);return values.length<=max&&values.every(v=>Number.isFinite(v)&&v>=min&&v<=maxValue)?values:null;}
+function dataSums() {
+ const data=parseList('data-values',20,-100,100);if(!data)return error(['data-result','data-plot','data-table'],'Masukkan 1–20 angka antara −100 dan 100. Gunakan titik untuk desimal.');
+ const squares=data.reduce((s,x)=>s+x*x,0),negative=data.some(x=>x<0),roots=negative?NaN:data.reduce((s,x)=>s+Math.sqrt(x),0),reciprocal=data.reduce((s,x)=>x===0?s:s+1/x,0);
+ if(!Number.isFinite(reciprocal))return error(['data-result','data-plot','data-table'],'Nilai terlalu dekat dengan nol; gunakan nilai yang lebih besar agar kebalikannya dapat ditampilkan.');
+ $('data-plot').innerHTML=bars([squares,roots,reciprocal],['Σx²','Σ√x','Σ(1/x)'],'Perbandingan jumlah kuadrat, akar, dan kebalikan data');
+ $('data-result').innerHTML=`<p><strong>Jumlah kuadrat:</strong> ${fmt(squares)}<br><strong>Jumlah akar:</strong> ${negative?'tidak terdefinisi dalam bilangan real':fmt(roots)}<br><strong>Jumlah kebalikan selain nol:</strong> ${fmt(reciprocal)}</p>`;
+ $('data-table').innerHTML=table(['Data x','x²','√x','1/x'],data.map(x=>[fmt(x),fmt(x*x),x<0?'Tidak real':fmt(Math.sqrt(x)),x===0?'Dilewati':fmt(1/x)]));
+}
+function resistors() {
+ const r=parseList('r-values',6,Number.MIN_VALUE,1e6);if(!r)return error(['r-result','r-plot'],'Masukkan 1–6 tahanan positif, maksimal 1.000.000 Ω per resistor.');
+ const series=r.reduce((s,x)=>s+x,0),sum=r.reduce((s,x)=>s+1/x,0),parallel=1/sum;
+ if(!Number.isFinite(sum))return error(['r-result','r-plot'],'Tahanan terlalu dekat dengan nol; gunakan nilai yang lebih besar.');
+ const resistor=(x,y,v)=>`<rect x="${x-23}" y="${y-11}" width="46" height="22" fill="#e9f0fc" stroke="${blue}" stroke-width="2"/><text x="${x}" y="${y-21}" text-anchor="middle">${fmt(v)} Ω</text>`;
+ let s='<text x="25" y="32">SERI · satu jalur</text><path d="M35 92H605" stroke="#526782" stroke-width="2"/>';
+ r.forEach((v,i)=>s+=resistor(75+i*490/Math.max(1,r.length-1),92,v));
+ const top=175,bottom=175+(r.length-1)*26;s+=`<text x="25" y="143">PARALEL · jalur bercabang</text><path d="M90 ${top}V${bottom}M550 ${top}V${bottom}" stroke="#526782" stroke-width="2"/>`;
+ r.forEach((v,i)=>{const y=top+i*26;s+=`<path d="M90 ${y}H550" stroke="#526782"/>`;
+ s+=`<rect x="275" y="${y-9}" width="90" height="18" fill="#e9f0fc" stroke="${blue}"/><text x="320" y="${y+4}" text-anchor="middle">${fmt(v)} Ω</text>`;});
+ $('r-plot').innerHTML=svg(s,'Perbandingan resistor tersusun seri dalam satu jalur dan paralel dalam beberapa cabang');
+ $('r-result').innerHTML=`<p><strong>Seri:</strong> ${r.map(fmt).join(' + ')} = <strong>${fmt(series)} Ω</strong></p><p><strong>Paralel:</strong> 1 / (${r.map(v=>`1/${fmt(v)}`).join(' + ')}) = <strong>${fmt(parallel)} Ω</strong></p>`;
+}
+['a','b','c'].forEach(id=>$(id).addEventListener('input',quadratic));$('fib-n').addEventListener('input',fibonacci);$('data-values').addEventListener('input',dataSums);$('r-values').addEventListener('input',resistors);
+quadratic();fibonacci();dataSums();resistors();
+</script></body></html>

@@ -1,0 +1,30 @@
+MULAI
+    OUTPUT "Pilih susunan: 1. Seri, 2. Paralel"
+    INPUT pilihan
+    INPUT N
+
+    IF (pilihan ≠ 1 AND pilihan ≠ 2) OR N <= 0 THEN
+        OUTPUT "Pilihan atau jumlah resistor tidak valid"
+    ELSE
+        jumlah ← 0
+
+        FOR i ← 1 TO N DO
+            OUTPUT "Masukkan tahanan resistor ke-", i
+            INPUT r
+
+            IF pilihan = 1 THEN
+                jumlah ← jumlah + r
+            ELSE
+                jumlah ← jumlah + (1 / r)
+            END IF
+        END FOR
+
+        IF pilihan = 1 THEN
+            tahananTotal ← jumlah
+        ELSE
+            tahananTotal ← 1 / jumlah
+        END IF
+
+        OUTPUT tahananTotal
+    END IF
+SELESAI

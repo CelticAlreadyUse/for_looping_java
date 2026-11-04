@@ -1,0 +1,28 @@
+MULAI
+    INPUT a, b, c
+
+    IF a = 0 THEN
+        OUTPUT "Bukan persamaan kuadrat"
+    ELSE
+        D ← (b * b) - (4 * a * c)
+
+        IF D > 0 THEN
+            akar1 ← (-b - SQRT(D)) / (2 * a)
+            akar2 ← (-b + SQRT(D)) / (2 * a)
+
+            x1 ← MIN(akar1, akar2)
+            x2 ← MAX(akar1, akar2)
+
+            OUTPUT "Persamaan: y = ", a, "x² + ", b, "x + ", c
+            OUTPUT "Akar-akarnya: ", x1, " dan ", x2
+            OUTPUT "x", "y"
+
+            FOR x ← x1 TO x2 STEP 0.25 DO
+                y ← (a * x * x) + (b * x) + c
+                OUTPUT x, y
+            END FOR
+        ELSE
+            OUTPUT "Nilai y tidak dihitung karena D <= 0"
+        END IF
+    END IF
+SELESAI

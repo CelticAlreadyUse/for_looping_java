@@ -1,0 +1,19 @@
+MULAI
+    firstFibonacci ← 1
+    secondFibonacci ← 0
+
+    OUTPUT "Masukkan banyak suku Fibonacci"
+    INPUT jumlahDeret
+
+    IF jumlahDeret <= 0 THEN
+        OUTPUT "Jumlah deret tidak boleh kurang dari atau sama dengan 0"
+    END IF
+
+    FOR i ← 0 TO jumlahDeret - 1 DO
+        fibonacci ← firstFibonacci + secondFibonacci
+        secondFibonacci ← fibonacci
+        firstFibonacci ← secondFibonacci - firstFibonacci
+
+        OUTPUT fibonacci, "," TANPA PINDAH BARIS
+    END FOR
+SELESAI

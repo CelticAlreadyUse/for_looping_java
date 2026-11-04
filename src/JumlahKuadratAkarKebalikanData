@@ -1,0 +1,35 @@
+MULAI
+    INPUT N
+
+    jumlahKuadrat ← 0
+    jumlahAkar ← 0
+    jumlahKebalikan ← 0
+    adaNegatif ← FALSE
+
+    FOR i ← 1 TO N DO
+        OUTPUT "Masukkan data ke-", i
+        INPUT x
+
+        jumlahKuadrat ← jumlahKuadrat + (x * x)
+
+        IF x >= 0 THEN
+            jumlahAkar ← jumlahAkar + SQRT(x)
+        ELSE
+            adaNegatif ← TRUE
+        END IF
+
+        IF x ≠ 0 THEN
+            jumlahKebalikan ← jumlahKebalikan + (1 / x)
+        END IF
+    END FOR
+
+    OUTPUT "Jumlah kuadrat data = ", jumlahKuadrat
+
+    IF adaNegatif = TRUE THEN
+        OUTPUT "Jumlah akar tidak terdefinisi dalam bilangan real"
+    ELSE
+        OUTPUT "Jumlah akar data = ", jumlahAkar
+    END IF
+
+    OUTPUT "Jumlah kebalikan data selain nol = ", jumlahKebalikan
+SELESAI
